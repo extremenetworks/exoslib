@@ -186,6 +186,18 @@ def ip_stats():
             retval.append(out[0])
     return retval
 
+def halDebugCongestion():
+    """
+    Returns CPU and fabric congestion for all switches in a stack.
+	If the switch is a standalone it will report as slot 1.
+    """
+
+    stackRslt = json.loads(exsh.clicmd('debug cfgmgr show next hal.halDebugCongestion formatted', True))
+    slot_data = []
+    for slot in stackRslt['data']:
+        slot_data.append({'Slot' : str(slot['slot']), 'cpu_cng' : str(slot['cpu_cng']), 'fabric_cng' : str(slot['fabric_cng'])})
+    return slot_data
+
 def is_port_active(port):
     port_status = json.loads(exsh.clicmd('debug cfgmgr show one vlan.show_ports_info formatted portList={0}'.format(port), capture=True))
     port_status = port_status['data'][0]['linkState']
